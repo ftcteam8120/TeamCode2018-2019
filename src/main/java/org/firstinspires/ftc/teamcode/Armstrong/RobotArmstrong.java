@@ -21,7 +21,7 @@ public class RobotArmstrong {
         right.setDirection(DcMotorSimple.Direction.REVERSE);
         left = map.dcMotor.get("left");
         hanger = map.dcMotor.get("hanger");
-        armRotate = map.dcMotor.get("armRotate");
+        armRotate = map.dcMotor.get("arm");
     }
     /*
     Sets the power of the motors to 0, thus stopping the motion of the robot
