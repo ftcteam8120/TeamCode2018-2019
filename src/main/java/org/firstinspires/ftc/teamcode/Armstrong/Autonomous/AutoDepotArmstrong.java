@@ -5,19 +5,20 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Armstrong.RobotArmstrong;
+import org.firstinspires.ftc.teamcode.Util.AutoHandler;
 
-@Autonomous(name = "AutoBlueCrater", group = "Armstrong")
-public class AutoBlueCrater extends OpMode {
+@Autonomous(name = "AutoDepotArmstrong", group = "Armstrong")
+public class AutoDepotArmstrong extends OpMode {
 
     private AutoHandler handler;
 
     /*
-     * Instantiates the robot and initializes the robot using the hardwareMap
+     * Instantiates and initializes the robot using the hardwareMap
      */
     public void init() {
         RobotArmstrong robot = new RobotArmstrong();
         robot.init(hardwareMap);
-        handler = new AutoHandler(robot, new ElapsedTime(), true, true);
+        handler = new AutoHandlerArmstrong(robot, new ElapsedTime(), false, false);
     }
 
     /*

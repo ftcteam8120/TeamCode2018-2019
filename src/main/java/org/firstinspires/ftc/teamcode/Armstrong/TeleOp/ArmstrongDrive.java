@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.Armstrong.RobotArmstrong;
 
 @TeleOp(name = "ArmstrongDrive", group = "Armstrong")
@@ -82,8 +83,8 @@ public class ArmstrongDrive extends OpMode {
     }
 
     private void updateCoDriver(Gamepad gamepad) {
-        robot.elbow.setPower(gamepad.left_stick_y * 0.5);
-        robot.arm.setPower((gamepad.right_trigger - gamepad.left_trigger) * 0.5);
+        robot.elbow.setPower(gamepad.left_stick_y * -0.5);
+        robot.arm.setPower(gamepad.right_trigger - gamepad.left_trigger);
 
         if(gamepad.a) succ = 1;
         else if(gamepad.b) succ = -1;
@@ -98,10 +99,9 @@ public class ArmstrongDrive extends OpMode {
         if(robot != null)
         {
             telemetry.addData("touch", (robot.upperTouch.isPressed() ? "U: pressed" : "U: unpressed") + (robot.lowerTouch.isPressed() ? "; L: pressed" : "; L: unpressed"));
-            telemetry.addData("colorL", "r: " + robot.colorL.red() + ", g: " + robot.colorL.green() + ", b: " + robot.colorL.blue());
-            telemetry.addData("colorR", "r: " + robot.colorR.red() + ", g: " + robot.colorR.green() + ", b: " + robot.colorR.blue());
             telemetry.addData("encoders", (robot.left.getMode() == DcMotor.RunMode.RUN_USING_ENCODER) ? "left: " + robot.getLeftDisplacement() + "; right: " + robot.getRightDisplacement() : "off");
-
+            Orientation orientation = robot.imu.getAngularOrientation();
+            telemetry.addData("imu", "1: " + orientation.firstAngle + "; 2: " + orientation.secondAngle + "; 3: " + orientation.thirdAngle);
         }
     }
 
