@@ -42,24 +42,28 @@ public class RobotCollins implements Robot {
         // Initialize & configure drive motors
         frontLeft = map.dcMotor.get("front_left");
         frontRight = map.dcMotor.get("front_right");
-        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeft = map.dcMotor.get("back_left");
         backRight = map.dcMotor.get("back_right");
-        backRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        setEncoders(true);
+        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        setEncoders(false);
         markEncoders();
 
         // Initialize & configure elevator components
+        /*
         hanger = map.dcMotor.get("hanger");
         hanger.setDirection(DcMotorSimple.Direction.REVERSE);
         lowerTouch = map.touchSensor.get("lower_touch");
         upperTouch = map.touchSensor.get("upper_touch");
+        */
 
         // Initialize & configure arm components
+        /*
         elbow = map.dcMotor.get("elbow");
         arm = map.dcMotor.get("arm");
         arm.setDirection(DcMotorSimple.Direction.REVERSE);
         impeller = map.dcMotor.get("impeller");
+        */
 
         // Initialize & configure IMU
         imu = map.get(BNO055IMU.class, "imu");
@@ -145,6 +149,6 @@ public class RobotCollins implements Robot {
         frontLeft.setPower(direction[0]*speed);
         frontRight.setPower(direction[1]*speed);
         backLeft.setPower(direction[2]*speed);
-        backRight.setPower(direction[2]*speed);
+        backRight.setPower(direction[3]*speed);
     }
 }

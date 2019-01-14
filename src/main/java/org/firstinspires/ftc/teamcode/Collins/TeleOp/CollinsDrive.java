@@ -23,7 +23,7 @@ public class CollinsDrive extends OpMode {
     public void loop() {
         // Routines separated into separate functions
         updateDriver();
-        updateCodriver();
+        //updateCodriver();
         updateAuto();
     }
 
@@ -39,7 +39,7 @@ public class CollinsDrive extends OpMode {
         else if(gamepad1.dpad_right) robot.drive(Utilities.RIGHT, .5);
         else if(gamepad1.dpad_down) robot.drive(Utilities.BACKWARD, .5);
         else if(gamepad1.dpad_left) robot.drive(Utilities.LEFT, .5);
-        else robot.drive(Utilities.calculateDirection(gamepad1.left_stick_x, gamepad1.left_stick_y), speed);
+        else robot.drive(Utilities.calculateDirection(gamepad1.left_stick_x, -gamepad1.left_stick_y), speed);
     }
 
     /**
