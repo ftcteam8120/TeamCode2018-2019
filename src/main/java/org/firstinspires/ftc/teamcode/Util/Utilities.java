@@ -31,6 +31,10 @@ public class Utilities {
     public static double[] ROTATE_CCW = {-1, 1, -1, 1};
     public static double[] ROTATE_CW = {1, -1, 1, -1};
 
+    public static final double SERVO_STOP = -0.05;
+    public static final double SERVO_B = -0.15;
+    public static final double SERVO_F = .05;
+
     /**
      * Calculate the direction of the robot based on the position of the stick.
      * @param stickX x-axis offset of the stick from -1 to 1

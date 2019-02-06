@@ -2,8 +2,9 @@ package org.firstinspires.ftc.teamcode.Collins;
 
 import com.disnodeteam.dogecv.CameraViewDisplay;
 import com.disnodeteam.dogecv.DogeCV;
-import com.disnodeteam.dogecv.detectors.roverrukus.SamplingOrderDetector;
+import com.disnodeteam.dogecv.detectors.roverrukus.GoldDetector;
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -28,13 +29,18 @@ public class RobotCollins implements Robot {
     // Arm components
     public DcMotor elbow;
     public DcMotor arm;
-    public DcMotor impeller;
+
+    // Impeller Servo
+    public CRServo impeller;
+    public CRServo knocker;
 
     // IMU
     public BNO055IMU imu;
 
+    private double lastAngle;
+
     // DogeCV detector
-    public SamplingOrderDetector detector;
+    public GoldDetector detector;
 
     @Override
     public void init(HardwareMap map) {
@@ -47,30 +53,31 @@ public class RobotCollins implements Robot {
         backRight = map.dcMotor.get("back_right");
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         setEncoders(false);
-        markEncoders();
 
         // Initialize & configure elevator components
-        /*
         hanger = map.dcMotor.get("hanger");
         hanger.setDirection(DcMotorSimple.Direction.REVERSE);
         lowerTouch = map.touchSensor.get("lower_touch");
         upperTouch = map.touchSensor.get("upper_touch");
-        */
+
+        impeller = null;
+        knocker = null;
 
         // Initialize & configure arm components
-        /*
+
         elbow = map.dcMotor.get("elbow");
         arm = map.dcMotor.get("arm");
         arm.setDirection(DcMotorSimple.Direction.REVERSE);
-        impeller = map.dcMotor.get("impeller");
-        */
 
         // Initialize & configure IMU
         imu = map.get(BNO055IMU.class, "imu");
         imu.initialize(Utilities.getGyroParams());
+        lastAngle = imu.getAngularOrientation().firstAngle;
+
+        markEncoders();
 
         // initialize & configure DogeCV sampling order detector
-        detector = new SamplingOrderDetector();
+        detector = new GoldDetector();
         detector.init(map.appContext, CameraViewDisplay.getInstance());
         detector.useDefaults();
         detector.downscale = 0.4; // How much to downscale the input frames
@@ -79,14 +86,23 @@ public class RobotCollins implements Robot {
         detector.maxAreaScorer.weight = 0.001;
         detector.ratioScorer.weight = 15;
         detector.ratioScorer.perfectRatio = 1.0;
+
+        // this is important
+        stop();
     }
 
     /**
      * Stop the robot
      */
+
     @Override
     public void stop() {
         drive(Utilities.STOPPED, 0f);
+        hanger.setPower(0);
+        if(impeller != null) impeller.setPower(Utilities.SERVO_STOP);
+        arm.setPower(0);
+        elbow.setPower(0);
+        if(knocker != null)  knocker.setPower(Utilities.SERVO_STOP);
     }
 
     /**
@@ -125,6 +141,11 @@ public class RobotCollins implements Robot {
         fret = frontRight.getCurrentPosition();
         blet = backLeft.getCurrentPosition();
         bret = backRight.getCurrentPosition();
+        lastAngle = imu.getAngularOrientation().firstAngle;
+    }
+
+    public double getAngDisplacement() {
+        return Math.abs(imu.getAngularOrientation().firstAngle - lastAngle);
     }
 
     /**

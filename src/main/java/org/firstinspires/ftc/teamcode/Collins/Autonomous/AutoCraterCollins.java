@@ -7,8 +7,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.Collins.RobotCollins;
 import org.firstinspires.ftc.teamcode.Util.AutoHandler;
 
-@Autonomous(name = "AutoDepotCollins", group = "Collins")
-public class AutoDepotCollins extends OpMode {
+@Autonomous(name = "AutoCraterCollins", group = "Collins")
+public class AutoCraterCollins extends OpMode {
 
     private AutoHandler handler;
     private RobotCollins robot;
@@ -20,7 +20,7 @@ public class AutoDepotCollins extends OpMode {
     public void init() {
         robot = new RobotCollins();
         robot.init(hardwareMap);
-        handler = new AutoHandlerCollins(robot, new ElapsedTime(), false, false);
+        handler = new AutoHandlerCollins(robot, new ElapsedTime(), false, true);
     }
 
     /**

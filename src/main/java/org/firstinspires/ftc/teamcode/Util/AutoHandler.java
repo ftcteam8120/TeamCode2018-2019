@@ -3,8 +3,6 @@ package org.firstinspires.ftc.teamcode.Util;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.Util.Robot;
-import org.firstinspires.ftc.teamcode.Util.RobotState;
 
 import static org.firstinspires.ftc.teamcode.Util.RobotState.*;
 
