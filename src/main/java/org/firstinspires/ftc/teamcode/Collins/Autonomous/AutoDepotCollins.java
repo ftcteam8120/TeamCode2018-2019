@@ -29,8 +29,6 @@ public class AutoDepotCollins extends OpMode {
     @Override
     public void start()
     {
-        robot.impeller = hardwareMap.crservo.get("impeller");
-        robot.knocker = hardwareMap.crservo.get("knocker");
         robot.detector.enable();
     }
 

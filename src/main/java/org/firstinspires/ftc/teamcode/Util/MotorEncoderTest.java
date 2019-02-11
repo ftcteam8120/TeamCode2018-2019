@@ -17,7 +17,7 @@ public class MotorEncoderTest extends OpMode {
 
     @Override
     public void loop() {
-        testMotor.setPower(1);
+        testMotor.setPower(gamepad1.a ? .5 : (gamepad1.b ? -.5 : 0));
         telemetry.addData("count", testMotor.getCurrentPosition());
     }
 }

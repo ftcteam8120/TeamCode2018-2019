@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.Collins.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Util;
 
 import org.firstinspires.ftc.teamcode.Collins.RobotCollins;
 import org.firstinspires.ftc.teamcode.Util.Utilities;
@@ -25,8 +24,6 @@ public class CollinsDrive extends OpMode {
 
     @Override
     public void start() {
-        robot.impeller = hardwareMap.crservo.get("impeller");
-        robot.knocker = hardwareMap.crservo.get("knocker");
         timer.reset();
     }
 
@@ -38,8 +35,6 @@ public class CollinsDrive extends OpMode {
         updateCodriver();
         updateAuto();
     }
-
-    double succ = -0.05;
 
     /**
      * Process gamepad1 (driver) controls
@@ -76,19 +71,25 @@ public class CollinsDrive extends OpMode {
         else robot.drive(Utilities.calculateDirection(gamepad1.left_stick_x, -gamepad1.left_stick_y), speed);
     }
 
+    double succ = 0;
     /**
      * Process gamepad2 (codriver) controls
      */
     private void updateCodriver()
     {
-        // Move the arm
+        // Arm controls
+        /* OLD
         robot.elbow.setPower(gamepad2.left_stick_y * -1);
         robot.arm.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
+        */
+        robot.extender.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
+        robot.flipper.setPower(gamepad2.left_stick_y * -0.5);
+        robot.lifter.setPower(gamepad2.right_stick_y * 0.5);
 
         // Update the state of the impeller
-        if(gamepad2.a) succ = Utilities.SERVO_F;
-        else if(gamepad2.b) succ = Utilities.SERVO_B;
-        else if(gamepad2.y) succ = Utilities.SERVO_STOP;
+        if(gamepad2.a) succ = 1;
+        else if(gamepad2.b) succ = -1;
+        else if(gamepad2.y) succ = 0;
         robot.impeller.setPower(succ);
     }
 
@@ -100,7 +101,7 @@ public class CollinsDrive extends OpMode {
     {
         //telemetry.addData("time", timer.milliseconds() + " ms since start");
         telemetry.addData("angle", robot.getAngDisplacement());
-        telemetry.addData("encoders", "" + robot.getDisplacement());
+        telemetry.addData("encoders", "" + robot.driveTrain.getDisplacement());
         telemetry.addData("touch", (robot.upperTouch.isPressed() ? "U:pressed;" : "U:unpressed;") + (robot.lowerTouch.isPressed() ? "L:pressed;" : "L:unpressed;"));
     }
 }

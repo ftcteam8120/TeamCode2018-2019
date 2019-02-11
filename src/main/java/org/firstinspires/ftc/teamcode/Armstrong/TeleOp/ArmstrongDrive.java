@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Armstrong.TeleOp;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -8,6 +9,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.Armstrong.RobotArmstrong;
 
+@Disabled
 @TeleOp(name = "ArmstrongDrive", group = "Armstrong")
 public class ArmstrongDrive extends OpMode {
 

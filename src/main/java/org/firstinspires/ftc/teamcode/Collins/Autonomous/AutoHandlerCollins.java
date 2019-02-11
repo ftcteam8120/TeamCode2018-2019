@@ -146,7 +146,7 @@ public class AutoHandlerCollins extends AutoHandler {
                     toState(EXPEL);
                 break;
             case EXPEL:
-                robot.impeller.setPower(Utilities.SERVO_F);
+                robot.impeller.setPower(1);
                 if(timer.milliseconds() >= 3000)
                     toState(TOKYO_DRIFT);
                 break;
@@ -155,15 +155,6 @@ public class AutoHandlerCollins extends AutoHandler {
                 if(robot.getDisplacement() >= 5400)
                     toState(RAISE);
                 break;
-            case RAISE:
-                robot.elbow.setPower(.5);
-                if(timer.milliseconds() >= 1000)
-                    toState(EXTEND);
-                break;
-            case EXTEND:
-                robot.arm.setPower(1);
-                if(timer.milliseconds() >= 4500)
-                    toState(HALT);
             case HALT:
             default:
                 robot.stop();

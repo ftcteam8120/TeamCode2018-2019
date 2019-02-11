@@ -15,11 +15,8 @@ import org.firstinspires.ftc.teamcode.Util.Robot;
 
 public class RobotCollins implements Robot {
 
-    // Drive motors
-    private DcMotor frontLeft;
-    private DcMotor frontRight;
-    private DcMotor backLeft;
-    private DcMotor backRight;
+    // Drive train
+    public DriveTrain driveTrain;
 
     // Elevator components
     public DcMotor hanger;
@@ -27,12 +24,13 @@ public class RobotCollins implements Robot {
     public TouchSensor upperTouch;
 
     // Arm components
-    public DcMotor elbow;
-    public DcMotor arm;
+    public DcMotor flipper;
+    public DcMotor lifter;
+    public DcMotor extender;
 
     // Impeller Servo
     public CRServo impeller;
-    public CRServo knocker;
+    //public CRServo knocker;
 
     // IMU
     public BNO055IMU imu;
@@ -45,29 +43,25 @@ public class RobotCollins implements Robot {
     @Override
     public void init(HardwareMap map) {
 
-        // Initialize & configure drive motors
-        frontLeft = map.dcMotor.get("front_left");
-        frontRight = map.dcMotor.get("front_right");
-        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        backLeft = map.dcMotor.get("back_left");
-        backRight = map.dcMotor.get("back_right");
-        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        // Initialize & configure drive train
+        driveTrain = new DriveTrain();
+        driveTrain.init(map);
+
         setEncoders(false);
 
-        // Initialize & configure elevator components
+        // Initialize & configure hanger components
         hanger = map.dcMotor.get("hanger");
         hanger.setDirection(DcMotorSimple.Direction.REVERSE);
         lowerTouch = map.touchSensor.get("lower_touch");
         upperTouch = map.touchSensor.get("upper_touch");
 
-        impeller = null;
-        knocker = null;
+        impeller = map.crservo.get("impeller");
+        //knocker = map.crservo.get("knocker");
 
-        // Initialize & configure arm components
-
-        elbow = map.dcMotor.get("elbow");
-        arm = map.dcMotor.get("arm");
-        arm.setDirection(DcMotorSimple.Direction.REVERSE);
+        // Initialize & configure mineral components
+        flipper = map.dcMotor.get("flipper");
+        lifter = map.dcMotor.get("lifter");
+        extender = map.dcMotor.get("extender");
 
         // Initialize & configure IMU
         imu = map.get(BNO055IMU.class, "imu");
@@ -97,12 +91,12 @@ public class RobotCollins implements Robot {
 
     @Override
     public void stop() {
-        drive(Utilities.STOPPED, 0f);
+        driveTrain.drive(Utilities.STOPPED, 0f);
         hanger.setPower(0);
-        if(impeller != null) impeller.setPower(Utilities.SERVO_STOP);
-        arm.setPower(0);
-        elbow.setPower(0);
-        if(knocker != null)  knocker.setPower(Utilities.SERVO_STOP);
+        impeller.setPower(0);
+        flipper.setPower(0);
+        extender.setPower(0);
+        lifter.setPower(0);
     }
 
     /**
@@ -110,66 +104,39 @@ public class RobotCollins implements Robot {
      * @param enabled
      */
     @Override
-    public void setEncoders(boolean enabled) {
-        if(enabled)
-        {
-            frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        }
-        else
-        {
-            frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        }
+    public void setEncoders(boolean enabled)
+    {
+        driveTrain.setEncoders(enabled);
     }
 
-    private int flet;
-    private int fret;
-    private int blet;
-    private int bret;
+    /**
+     * Passthrough to drive train drive function
+     * @param dir preset direction array
+     * @param pow power scale
+     */
+    public void drive(double[] dir, double pow)
+    {
+        driveTrain.drive(dir, pow);
+    }
+
+    /**
+     * Passthrough to drive train displacement function
+     */
+    public int getDisplacement()
+    {
+        return driveTrain.getDisplacement();
+    }
 
     /**
      * Zero the software encoder positions
      */
     @Override
     public void markEncoders() {
-        flet = frontLeft.getCurrentPosition();
-        fret = frontRight.getCurrentPosition();
-        blet = backLeft.getCurrentPosition();
-        bret = backRight.getCurrentPosition();
+        driveTrain.markEncoders();
         lastAngle = imu.getAngularOrientation().firstAngle;
     }
 
     public double getAngDisplacement() {
         return Math.abs(imu.getAngularOrientation().firstAngle - lastAngle);
-    }
-
-    /**
-     * Get average encoder tick difference for the entire robot
-     * @return average motor displacement
-     */
-    public int getDisplacement() {
-        int fldiff = frontLeft.getCurrentPosition() - flet;
-        int frdiff = frontRight.getCurrentPosition() - fret;
-        int bldiff = backLeft.getCurrentPosition() - blet;
-        int brdiff = backRight.getCurrentPosition() - bret;
-
-        return (Math.abs(fldiff) + Math.abs(frdiff) + Math.abs(bldiff) + Math.abs(brdiff)) / 4;
-    }
-
-    /**
-     * Set motor powers according to preset direction at a certain speed
-     * @param direction preset direction (array of motor powers defined in Utilities class)
-     * @param speed factor that multiplies into motor powers to scale robot speed
-     */
-    public void drive(double[] direction, double speed) {
-        frontLeft.setPower(direction[0]*speed);
-        frontRight.setPower(direction[1]*speed);
-        backLeft.setPower(direction[2]*speed);
-        backRight.setPower(direction[3]*speed);
     }
 }
