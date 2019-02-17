@@ -27,10 +27,10 @@ public class RobotCollins implements Robot {
     public DcMotor flipper;
     public DcMotor lifter;
     public DcMotor extender;
+    public TouchSensor extendTouch;
 
     // Impeller Servo
     public CRServo impeller;
-    //public CRServo knocker;
 
     // IMU
     public BNO055IMU imu;
@@ -62,6 +62,7 @@ public class RobotCollins implements Robot {
         flipper = map.dcMotor.get("flipper");
         lifter = map.dcMotor.get("lifter");
         extender = map.dcMotor.get("extender");
+        extendTouch = map.touchSensor.get("extend_touch");
 
         // Initialize & configure IMU
         imu = map.get(BNO055IMU.class, "imu");

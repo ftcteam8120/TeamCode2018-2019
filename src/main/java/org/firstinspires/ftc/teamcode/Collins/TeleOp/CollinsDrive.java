@@ -82,9 +82,12 @@ public class CollinsDrive extends OpMode {
         robot.elbow.setPower(gamepad2.left_stick_y * -1);
         robot.arm.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
         */
-        robot.extender.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
-        robot.flipper.setPower(gamepad2.left_stick_y * -0.5);
-        robot.lifter.setPower(gamepad2.right_stick_y * 0.5);
+        robot.flipper.setPower(gamepad2.right_trigger - gamepad2.left_trigger);
+        if(gamepad2.left_stick_y > 0) // if extending outward, make sure touch sensor isn't pressed
+            robot.extender.setPower(robot.extendTouch.isPressed() ? 0 : gamepad2.left_stick_y);
+        else
+            robot.extender.setPower(gamepad2.left_stick_y); // turn off or retract
+        robot.lifter.setPower(gamepad2.right_stick_y * 0.7);
 
         // Update the state of the impeller
         if(gamepad2.a) succ = 1;

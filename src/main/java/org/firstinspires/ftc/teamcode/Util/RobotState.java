@@ -18,6 +18,7 @@ public enum RobotState {
     DRIVE_AWAY,
     RETRACT,
     QUOTE_ONE_EIGHTY_ENDQUOTE,
+    PREXPEL,
     EXPEL,
     BACK_UP_1,
     ROTATE,

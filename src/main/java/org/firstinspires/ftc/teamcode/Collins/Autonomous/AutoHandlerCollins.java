@@ -15,7 +15,7 @@ import static com.disnodeteam.dogecv.detectors.roverrukus.SamplingOrderDetector.
 
 public class AutoHandlerCollins extends AutoHandler {
 
-    public static final double speedFactor = 1.5;
+    public static final double speedFactor = 1;
 
     /**
      * Constructor
@@ -26,7 +26,7 @@ public class AutoHandlerCollins extends AutoHandler {
      */
     public AutoHandlerCollins(Robot r, ElapsedTime et, boolean b, boolean c) {
         super(r, et, b, c);
-        goldPos = -1;
+        goldPos = -999;
     }
 
     /**
@@ -74,7 +74,7 @@ public class AutoHandlerCollins extends AutoHandler {
                     goldLocation = null;
                     if (goldPos < 0)
                         goldLocation = LEFT;
-                    else if (goldPos > 380)
+                    else if (goldPos > 300)
                         goldLocation = RIGHT;
                     else
                         goldLocation = CENTER;
@@ -95,7 +95,7 @@ public class AutoHandlerCollins extends AutoHandler {
                 break;
             case UNHOOK_2:
                 robot.drive(Utilities.FORWARD, .20 * speedFactor);
-                // This line is used to gradually retarct the hanger
+                // This line is used in the next few states to gradually retract the hanger
                 robot.hanger.setPower(robot.lowerTouch.isPressed() ? 0 : -.6);
                 if(robot.getDisplacement() >= 940)
                     toState(UNHOOK_3);
@@ -123,37 +123,48 @@ public class AutoHandlerCollins extends AutoHandler {
                 if(robot.getDisplacement() >= 3600)
                     toState(facingCrater ? HALT : ALIGN_1);
                 break;
-            case ALIGN_1:
+            case ALIGN_1:  // Line back up with center mineral
                 if(goldLocation == null || goldLocation == CENTER)
-                    toState(QUOTE_ONE_EIGHTY_ENDQUOTE);
+                    toState(QUOTE_ONE_EIGHTY_ENDQUOTE); // ignore if we're already there
                 robot.drive(goldLocation == RIGHT ? Utilities.LEFT : Utilities.RIGHT, .20 * speedFactor);
                 if(robot.getDisplacement() >= 1570)
                     toState(QUOTE_ONE_EIGHTY_ENDQUOTE);
                 break;
-            case QUOTE_ONE_EIGHTY_ENDQUOTE:
-                robot.drive(Utilities.ROTATE_CCW, .2 * speedFactor);
-                if(robot.getAngDisplacement() >= 135)
-                    toState(SQUARE_0);
+            case PREXPEL:
+                robot.drive(Utilities.FORWARD, .20 * speedFactor);
+                if(robot.getDisplacement() >= 200) //TODO placeholder value
+                    toState(facingCrater ? HALT : EXPEL);
                 break;
-            case SQUARE_0:
-                robot.drive(Utilities.RIGHT, .3 * speedFactor);
-                if(timer.milliseconds() >= 3000)
-                    toState(SQUARE_1);
-                break;
-            case SQUARE_1:
-                robot.drive(Utilities.LEFT, .3 * speedFactor);
-                if(robot.getDisplacement() >= 600)
-                    toState(EXPEL);
-                break;
-            case EXPEL:
+            case EXPEL: // Expel the marker using the impeller
                 robot.impeller.setPower(1);
                 if(timer.milliseconds() >= 3000)
+                    toState(SQUARE_0);
+                break;
+            case SQUARE_0: // Rotate to be roughly parallel to the wall
+                robot.drive(Utilities.ROTATE_CCW, .50 * speedFactor * (robot.getAngDisplacement() / 135.0)); // gradient rotation speed
+                if(robot.getAngDisplacement() > 135)
+                    toState(SQUARE_1);
+                break;
+            case SQUARE_1: // SLAM!
+                robot.drive(Utilities.RIGHT, .75 * speedFactor);
+                if(timer.milliseconds() >= 500)
+                    toState(SQUARE_2);
+                break;
+            case SQUARE_2: // Pull away from the wall slowly
+                robot.drive(Utilities.LEFT, .15 * speedFactor);
+                if(robot.getDisplacement() >= 200) //TODO placeholder value
                     toState(TOKYO_DRIFT);
                 break;
-            case TOKYO_DRIFT:
+            case TOKYO_DRIFT: // Bolt towards the crater
                 robot.drive(Utilities.FORWARD, .2 * speedFactor);
                 if(robot.getDisplacement() >= 5400)
                     toState(RAISE);
+                break;
+            case RAISE: // Raise the cannons!!
+                toState(EXTEND);
+                break;
+            case EXTEND: // Fireeeeeeeee!!!!!
+                toState(HALT);
                 break;
             case HALT:
             default:
