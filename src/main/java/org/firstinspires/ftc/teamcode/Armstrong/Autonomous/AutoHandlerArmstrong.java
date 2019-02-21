@@ -18,7 +18,7 @@ import static org.firstinspires.ftc.teamcode.Util.RobotState.EXTEND;
 import static org.firstinspires.ftc.teamcode.Util.RobotState.HALT;
 import static org.firstinspires.ftc.teamcode.Util.RobotState.RAISE;
 import static org.firstinspires.ftc.teamcode.Util.RobotState.RETRACT;
-import static org.firstinspires.ftc.teamcode.Util.RobotState.ROTATE;
+import static org.firstinspires.ftc.teamcode.Util.RobotState.ROTATE_0;
 import static org.firstinspires.ftc.teamcode.Util.RobotState.TOKYO_DRIFT;
 import static org.firstinspires.ftc.teamcode.Util.RobotState.UNHOOK_0;
 import static org.firstinspires.ftc.teamcode.Util.RobotState.UNHOOK_1;
@@ -137,9 +137,9 @@ public class AutoHandlerArmstrong extends AutoHandler {
                 robot.left.setPower(-.5);
                 robot.right.setPower(-.5);
                 if(timer.milliseconds() >= 350)
-                    toState(ROTATE);
+                    toState(ROTATE_0);
                 break;
-            case ROTATE:
+            case ROTATE_0:
                 robot.left.setPower(-.3);
                 robot.right.setPower(.3);
                 if(robot.imu.getAngularOrientation().firstAngle >= 114)

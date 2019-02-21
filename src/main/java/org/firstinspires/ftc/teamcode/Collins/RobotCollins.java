@@ -27,10 +27,10 @@ public class RobotCollins implements Robot {
     public DcMotor flipper;
     public DcMotor lifter;
     public DcMotor extender;
-    public TouchSensor extendTouch;
 
-    // Impeller Servo
+    // Arm servos
     public CRServo impeller;
+    public CRServo bucket;
 
     // IMU
     public BNO055IMU imu;
@@ -62,7 +62,7 @@ public class RobotCollins implements Robot {
         flipper = map.dcMotor.get("flipper");
         lifter = map.dcMotor.get("lifter");
         extender = map.dcMotor.get("extender");
-        extendTouch = map.touchSensor.get("extend_touch");
+        bucket = map.crservo.get("bucket");
 
         // Initialize & configure IMU
         imu = map.get(BNO055IMU.class, "imu");
@@ -98,6 +98,7 @@ public class RobotCollins implements Robot {
         flipper.setPower(0);
         extender.setPower(0);
         lifter.setPower(0);
+        bucket.setPower(0);
     }
 
     /**
@@ -117,6 +118,10 @@ public class RobotCollins implements Robot {
      */
     public void drive(double[] dir, double pow)
     {
+        if(pow > 1)
+            pow = 1;
+        if(pow < -1)
+            pow = -1;
         driveTrain.drive(dir, pow);
     }
 
